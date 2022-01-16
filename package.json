@@ -4,7 +4,8 @@
   "description": "This is to learn the google cloud ocr api",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "start": "node app.js"
   },
   "author": "",
   "license": "ISC",
