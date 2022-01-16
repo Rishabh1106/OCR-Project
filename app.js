@@ -98,9 +98,7 @@ async function main(inputFile) {
     return opJSON;
 }
 
-
 const port = 3000 || process.env.PORT;
 app.listen(port, () => {
-    const port = server.address().port;
     console.log(`server running at port : ${port}`);
 })
