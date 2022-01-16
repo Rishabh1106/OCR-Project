@@ -36,6 +36,10 @@ app.post('', upload.single('file'), async (req, res) => {
     res.json(resJSON)
 })
 
+app.get('/test', async (req, res) => {
+    console.log(keyJSON)
+})
+
 const keyJSON = {
     "type": process.env.type,
     "project_id": process.env.project_id,
