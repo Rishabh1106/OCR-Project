@@ -31,16 +31,10 @@ var storage = multer.diskStorage({
 const upload = multer({ storage: storage })
 
 app.post('', upload.single('file'), async (req, res) => {
-    console.log(req.file)
     const resJSON = await main('./input.jpg');
     console.log(resJSON)
     res.json(resJSON)
 })
-
-// Creates a client
-// const client = new vision.ImageAnnotatorClient({
-//     keyFilename: "./celtic-current-337902-3c973da6e430.json"
-// });
 
 const keyJSON = {
     "type": process.env.type,
@@ -64,7 +58,7 @@ async function detectFaces(inputFile) {
     const results = await client.faceDetection(request);
     const faces = results[0].faceAnnotations;
     const numFaces = faces.length;
-    console.log(`Found ${numFaces} face${numFaces === 1 ? '' : 's'}.`);
+    //console.log(`Found ${numFaces} face${numFaces === 1 ? '' : 's'}.`);
     return faces;
 }
 
@@ -98,7 +92,6 @@ async function main(inputFile) {
     const x2 = faces[0].boundingPoly.vertices[2].x;
     const y2 = faces[0].boundingPoly.vertices[2].y;
     const encoded = await funcJimp(x0, y0, x2 - x0, y2 - y0, inputFile);
-    console.log(typeof encoded)
     //const encoded = await fsP.readFile('./crop.png', 'base64');
     const opJSON = {
         Name: name,
