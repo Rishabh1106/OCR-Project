@@ -7,28 +7,35 @@ const fsP = require('fs').promises;
 var _ = require('lodash');
 const Jimp = require('jimp');
 const multer = require('multer');
+const { crop } = require("jimp");
 
 var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/')
+        cb(null, '')
     },
     filename: function (req, file, cb) {
         cb(null, 'input.jpg')
     }
 })
 
-const upload = multer({ storage: storage });
+// const upload = multer({
+//     fileFilter(req, file, cb, next) {
+//         if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+//             return cb(new Error("Please upload an image"));
+//         }
+
+//         cb(undefined, true);
+//     },
+// });
+
+const upload = multer({ storage: storage })
 
 app.post('', upload.single('file'), async (req, res) => {
-    const resJSON = await main('./uploads/input.jpg');
+    console.log(req.file)
+    const resJSON = await main('./input.jpg');
     console.log(resJSON)
     res.json(resJSON)
 })
-
-app.get('/test', async (req, res) => {
-    res.send("hello")
-})
-
 
 // Creates a client
 // const client = new vision.ImageAnnotatorClient({
@@ -63,8 +70,14 @@ async function detectFaces(inputFile) {
 
 async function funcJimp(x, y, w, h, img) {
     const image = await Jimp.read(img);
-    image.crop(x, y, w, h + 0.2 * h)
-        .write('./crop.png');
+    // image.crop(x, y, w, h + 0.2 * h)
+    //     .write('./crop.png');
+    var imageBase64
+    image.crop(x, y, w, h + 0.2 * h).getBase64(Jimp.AUTO, (err, res) => {
+        imageBase64 = res;
+    })
+
+    return imageBase64;
 }
 
 
@@ -84,9 +97,9 @@ async function main(inputFile) {
     const y0 = faces[0].boundingPoly.vertices[0].y;
     const x2 = faces[0].boundingPoly.vertices[2].x;
     const y2 = faces[0].boundingPoly.vertices[2].y;
-    await funcJimp(x0, y0, x2 - x0, y2 - y0, inputFile);
-    const encoded = await fsP.readFile('./crop.png', 'base64');
-
+    const encoded = await funcJimp(x0, y0, x2 - x0, y2 - y0, inputFile);
+    console.log(typeof encoded)
+    //const encoded = await fsP.readFile('./crop.png', 'base64');
     const opJSON = {
         Name: name,
         DOB: dob[0],
