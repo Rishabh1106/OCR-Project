@@ -25,6 +25,11 @@ app.post('', upload.single('file'), async (req, res) => {
     res.json(resJSON)
 })
 
+app.get('/test', async (req, res) => {
+    res.send("hello")
+})
+
+
 // Creates a client
 // const client = new vision.ImageAnnotatorClient({
 //     keyFilename: "./celtic-current-337902-3c973da6e430.json"
@@ -94,8 +99,8 @@ async function main(inputFile) {
 }
 
 
-const port = 3000 || process.env.PORT;
+//const port = 3000 || process.env.PORT;
+const port = server.address().port || 3000;
 app.listen(port, () => {
-    const port = server.address().port;
     console.log(`server running at port : ${port}`);
 })
